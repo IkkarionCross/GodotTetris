@@ -3,9 +3,15 @@ using Godot;
 public class Piece2D: Node2D
 {
     private float time = 0.0f;
-    const float TIME_TO_MOVE = 1.0f;
+    const float TIME_TO_MOVE = 0.2f;
 
-	private Vector2 velocity = new Vector2(0, 10);
+	public Vector2 velocity 
+    {
+        get 
+        {
+            return new Vector2(0, SquareSize.y);
+        }
+    }
 
     private bool isMoving;
     public bool IsMoving {
@@ -13,6 +19,10 @@ public class Piece2D: Node2D
     }
 
 	private PieceShape shape;
+    public PieceShape Shape
+    {
+        get {return shape;}
+    }
 
 	private PieceType _type;
 	public PieceType Type {
@@ -20,13 +30,20 @@ public class Piece2D: Node2D
 	}
 
     public Vector2 SquareSize {
-        get {return shape.Size;}
+        get {return shape.SquareSize;}
     } 
+
+    public Vector2 startPosition;
+
+    public Board2D Board;
 	
-	public Piece2D(PieceType type, PieceShape shape) {
+	public Piece2D(PieceType type, PieceShape shape) 
+    {
 		this._type = type;
 		this.shape = shape;
         this.isMoving = true;
+
+        shape.drawIn(this);
 	}
 
     public void stopMoving() {
@@ -35,9 +52,6 @@ public class Piece2D: Node2D
 
     public override void _Ready()
 	{
-        Vector2 viewPortSize = GetViewportRect().Size;
-		Vector2 translation = new Vector2((viewPortSize.x * 0.5f) - (SquareSize.x * 0.5f), (viewPortSize.y * 0.5f) - (SquareSize.y * 0.5f));
-		this.Transform = new Transform2D(Vector2.Right, Vector2.Down, translation);
 	}
 
     public override void _Process(float delta) {
@@ -46,13 +60,32 @@ public class Piece2D: Node2D
         time += delta;
         if (time >= TIME_TO_MOVE) {
             time = 0;
-			this.GlobalTransform = GlobalTransform.Translated(velocity);
+
+            if (!Board.CanMove(this))
+            {
+                isMoving = false;
+                return;
+            }
+
+            Board.resetLocation(this);
+            this.GlobalTransform = GlobalTransform.Translated(velocity);
+            if (hasCollidedWithFloor(Board.Size)) 
+            {
+                isMoving = false;
+                adjustPositionForCollisionWithFloor(Board.Size);
+            }
+
+            Board.setLocation(this);
+            // GD.Print("Board:");
+            // Board.printBoard();
+
             Update();
         }
     }
 
-    public override void _Draw() {
-		shape.drawIn(this);
+    public override void _Draw() 
+    {
+		
 	}
 
     public void adjustPositionForCollisionWithFloor(Vector2 viewPortSize) 
@@ -62,7 +95,7 @@ public class Piece2D: Node2D
 
     public bool hasCollidedWithFloor(Vector2 viewPortSize) 
     {
-        return Position.y + (SquareSize.y * 0.5f) >= viewPortSize.y;
+        return Position.y + (shape.Size.y * 0.5f) >= viewPortSize.y;
     }
 
     public bool hasCollidedWithSquare(SquareNode node) 
