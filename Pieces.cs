@@ -1,10 +1,12 @@
 using Godot;
 
-public enum PieceType {
+public enum PieceType 
+{
 	square, I, T, Z, S, L
 }
 
-public interface IPieceShape {
+public interface IPieceShape 
+{
 	void drawIn(Node2D node);
 }
 
@@ -20,17 +22,6 @@ public class SquareNode: Node2D
 		get  { return isCollidable; }
 	}
 
-	public Vector2 fixedPosition
-	{
-		get 
-		{
-			float x = GlobalPosition.x + (size.x * 0.5f);
-			float y = GlobalPosition.y + (size.x * 0.5f);
-
-			return new Vector2(x, y);
-		}
-	}
-
 	public SquareNode(Vector2 position, Vector2 size, Color color, bool isCollidable) 
 	{
 		this.Position = position;
@@ -41,7 +32,7 @@ public class SquareNode: Node2D
 
 	public override void _Draw() 
 	{
-		this.DrawRect(new Rect2(Position, size), new Color(0,0,1,1));
+		this.DrawRect(new Rect2(Vector2.Zero, size), new Color(0,0,1,1));
 	}
 }
 
@@ -56,6 +47,12 @@ public abstract class PieceShape: IPieceShape {
 		get {return size;}
 	}
 
+	protected string name;
+	public string Name 
+	{
+		get { return name; }
+	}
+
 	protected Node2D[] _squareParts;
 	public Node2D[] Parts {
 		get { return _squareParts; }
@@ -68,17 +65,16 @@ public abstract class PieceShape: IPieceShape {
 	protected abstract void construct();
 
 	public abstract void drawIn(Node2D node);
-
-
 }
 
-public class SquareShape: PieceShape {
-	
+public class SquareShape: PieceShape 
+{
 	public SquareShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
 		this.size = new Vector2(squareSize.x * 2, squareSize.y * 2);
 		this._squareParts = new Node2D[4];
+		this.name = "Square";
 		
 		construct();
 	}
@@ -89,6 +85,41 @@ public class SquareShape: PieceShape {
 		SquareNode node2 = new SquareNode(new Vector2(0, -squareSize.y * 0.5f), squareSize, new Color(0,0,1,1), false);
 		SquareNode node3 = new SquareNode(new Vector2(-squareSize.x * 0.5f, 0), squareSize, new Color(0,0,1,1), true);
 		SquareNode node4 = new SquareNode(Vector2.Zero, squareSize, new Color(0,0,1,1), true);
+
+		this._squareParts[0] = node1;
+		this._squareParts[1] = node2;
+		this._squareParts[2] = node3;
+		this._squareParts[3] = node4;
+	}
+
+	public override void drawIn(Node2D node) 
+	{
+		foreach (Node2D part in this._squareParts)
+		{
+			node.AddChild(part);
+		}
+	}
+
+}
+
+public class LShape: PieceShape 
+{
+	public LShape(Vector2 squareSize) : base(squareSize) 
+	{
+		this.squareSize = squareSize;
+		this.size = new Vector2(0, 0);
+		this._squareParts = new Node2D[4];
+		this.name = "L";
+		
+		construct();
+	}
+
+	protected override void construct()
+	{
+		SquareNode node1 = new SquareNode(new Vector2(0			  , -squareSize.y * 2), squareSize, new Color(0,0,1,1), false);
+		SquareNode node2 = new SquareNode(new Vector2(0			  , -squareSize.y    ), squareSize, new Color(0,0,1,1), false);
+		SquareNode node3 = new SquareNode(new Vector2(0			  , 0				 ), squareSize, new Color(0,0,1,1), true);
+		SquareNode node4 = new SquareNode(new Vector2(squareSize.x, 0				 ), squareSize, new Color(0,0,1,1), true);
 
 		this._squareParts[0] = node1;
 		this._squareParts[1] = node2;

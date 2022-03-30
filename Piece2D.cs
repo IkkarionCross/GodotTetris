@@ -54,7 +54,8 @@ public class Piece2D: Node2D
 	{
 	}
 
-    public override void _Process(float delta) {
+    public override void _Process(float delta) 
+    {
         if (!isMoving) { return; }
 
         time += delta;
@@ -69,15 +70,12 @@ public class Piece2D: Node2D
 
             Board.resetLocation(this);
             this.GlobalTransform = GlobalTransform.Translated(velocity);
-            if (hasCollidedWithFloor(Board.Size)) 
-            {
-                isMoving = false;
-                adjustPositionForCollisionWithFloor(Board.Size);
-            }
 
             Board.setLocation(this);
-            // GD.Print("Board:");
-            // Board.printBoard();
+
+            GD.Print("Board:");
+            Board.printBoard();
+            
 
             Update();
         }
@@ -85,7 +83,7 @@ public class Piece2D: Node2D
 
     public override void _Draw() 
     {
-		
+		shape.drawIn(this);
 	}
 
     public void adjustPositionForCollisionWithFloor(Vector2 viewPortSize) 

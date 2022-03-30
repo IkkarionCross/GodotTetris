@@ -43,17 +43,23 @@ public class Board2D: Node2D
     {
         Vector2 viewPortSize = GetViewport().Size;
         int marginX = (int)((viewPortSize.x - size.x) * 0.5f);
+        int marginY = (int)((viewPortSize.x - size.x) * 0.5f);
 
         //  GD.Print("Update location");
 
         foreach(SquareNode part in piece.Shape.Parts)
         {
-            int col = (int)Mathf.Floor((part.fixedPosition.x - marginX) / squareSize.x);
-            int row = (int)Mathf.Floor(part.fixedPosition.y / squareSize.y);
+             if (part.GlobalPosition.y < 0) 
+            {
+                continue;
+            }
 
-            // GD.Print("GlobalPosition :" + part.GlobalPosition);
+            int col = (int)Mathf.Floor((part.GlobalPosition.x - marginX) / (squareSize.x ));
+            int row = (int)Mathf.Floor(part.GlobalPosition.y / (squareSize.y));
 
+            
             // GD.Print("Col: " + col + " Row: " + row);
+            // GD.Print("GlobalPosition :" + part.GlobalPosition);
 
             boardPieces[col, row] = isInLocation;
         }
@@ -76,16 +82,21 @@ public class Board2D: Node2D
 
         foreach(SquareNode part in piece.Shape.Parts)
         {
+            if (part.GlobalPosition.y < 0) 
+            {
+                continue;
+            }
+
             if (!part.IsCollidable)
             {
                 continue;
             }
             
-            int col = (int)Mathf.Floor((part.fixedPosition.x - marginX) / squareSize.x);
-            int row = (int)Mathf.Floor(part.fixedPosition.y / squareSize.y);
+            int col = (int)Mathf.Floor((part.GlobalPosition.x - marginX) / squareSize.x);
+            int row = (int)Mathf.Floor(part.GlobalPosition.y / squareSize.y);
             row += 1;
 
-            if (row >= rowCount) { return false; }
+            if (row >= rowCount - 1) { return false; }
 
             if (boardPieces[col, row] == true)
             {
@@ -112,12 +123,8 @@ public class Board2D: Node2D
     public override void _Draw() {
         Vector2 viewPortSize = GetViewport().Size;
 
-        GD.Print(viewPortSize.x);
-
         int marginWidth = (int)((viewPortSize.x - size.x) * 0.5f);
         int marginHeight = (int)((viewPortSize.y - size.y) * 0.5f);
-
-        GD.Print("Margin: " + marginWidth);
 
         for (int c = 0; c <= colCount; c++)
         {

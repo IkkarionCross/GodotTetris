@@ -15,7 +15,15 @@ public class ShapeCreator : Node2D
 
 	private Vector2 viewPortSize;
 
-	private Piece2D create()
+	private Piece2D createL()
+	{
+		Piece2D fallingPiece = new Piece2D(PieceType.square, new LShape(board2D.squareSize));
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape);
+		fallingPiece.Board = board2D;
+		return fallingPiece;
+	}
+
+	private Piece2D createSquare()
 	{
 		Piece2D fallingPiece = new Piece2D(PieceType.square, new SquareShape(board2D.squareSize));
 		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape);
@@ -36,7 +44,7 @@ public class ShapeCreator : Node2D
 		GD.Print("Square size: " + board2D.squareSize);
 
 		viewPortSize = GetViewportRect().Size;
-		Piece2D piece1 = create();
+		Piece2D piece1 = createL();
         AddChild(piece1);
 	}
 
@@ -46,13 +54,13 @@ public class ShapeCreator : Node2D
 		time += delta;
         if (time >= TIME_TO_CREATE) 
 		{
-			if (created == 2)
+			if (created == 1)
 			{
 				return;
 			}
             time = 0;
-			Piece2D piece = create();
-        	AddChild(piece);
+			// Piece2D piece = createSquare();
+        	// AddChild(piece);
 			created++;
 		}
  	}
