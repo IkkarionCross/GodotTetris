@@ -73,8 +73,8 @@ public class Piece2D: Node2D
 
             Board.setLocation(this);
 
-            GD.Print("Board:");
-            Board.printBoard();
+            // GD.Print("Board:");
+            // Board.printBoard();
             
 
             Update();

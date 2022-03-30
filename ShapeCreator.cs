@@ -5,7 +5,7 @@ using System;
 public class ShapeCreator : Node2D
 {
 	private float time = 0.0f;
-    const float TIME_TO_CREATE = 1.0f;
+    const float TIME_TO_CREATE = 3.0f;
 
 
 	private int created = 0;
@@ -18,7 +18,7 @@ public class ShapeCreator : Node2D
 	private Piece2D createL()
 	{
 		Piece2D fallingPiece = new Piece2D(PieceType.square, new LShape(board2D.squareSize));
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape);
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 3);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
@@ -26,7 +26,7 @@ public class ShapeCreator : Node2D
 	private Piece2D createSquare()
 	{
 		Piece2D fallingPiece = new Piece2D(PieceType.square, new SquareShape(board2D.squareSize));
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape);
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Right * board2D.squareSize.x);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
@@ -59,8 +59,8 @@ public class ShapeCreator : Node2D
 				return;
 			}
             time = 0;
-			// Piece2D piece = createSquare();
-        	// AddChild(piece);
+			Piece2D piece = createSquare();
+        	AddChild(piece);
 			created++;
 		}
  	}

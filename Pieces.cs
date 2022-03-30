@@ -81,9 +81,9 @@ public class SquareShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(-squareSize.x * 0.5f, -squareSize.y * 0.5f), squareSize, new Color(0,0,1,1), false);
-		SquareNode node2 = new SquareNode(new Vector2(0, -squareSize.y * 0.5f), squareSize, new Color(0,0,1,1), false);
-		SquareNode node3 = new SquareNode(new Vector2(-squareSize.x * 0.5f, 0), squareSize, new Color(0,0,1,1), true);
+		SquareNode node1 = new SquareNode(new Vector2(-squareSize.x, -squareSize.y), squareSize, new Color(0,0,1,1), false);
+		SquareNode node2 = new SquareNode(new Vector2(0, -squareSize.y), squareSize, new Color(0,0,1,1), false);
+		SquareNode node3 = new SquareNode(new Vector2(-squareSize.x, 0), squareSize, new Color(0,0,1,1), true);
 		SquareNode node4 = new SquareNode(Vector2.Zero, squareSize, new Color(0,0,1,1), true);
 
 		this._squareParts[0] = node1;
