@@ -22,11 +22,20 @@ public class Piece2D: Node2D
     public PieceShape Shape
     {
         get {return shape;}
+
+        set 
+        {
+            this.shape = value;
+        }
     }
 
 	private PieceType _type;
 	public PieceType Type {
 		get { return _type; }
+        set 
+        {
+            this._type = value;
+        }
 	}
 
     public Vector2 SquareSize {
@@ -36,15 +45,11 @@ public class Piece2D: Node2D
     public Vector2 startPosition;
 
     public Board2D Board;
-	
-	public Piece2D(PieceType type, PieceShape shape) 
-    {
-		this._type = type;
-		this.shape = shape;
-        this.isMoving = true;
 
-        shape.drawIn(this);
-	}
+    public Piece2D()
+    {
+
+    }
 
     public void stopMoving() {
         this.isMoving = false;
@@ -52,6 +57,8 @@ public class Piece2D: Node2D
 
     public override void _Ready()
 	{
+        this.isMoving = true;
+        shape.drawIn(this);
 	}
 
     public override void _Process(float delta) 
