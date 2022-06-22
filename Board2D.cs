@@ -1,5 +1,17 @@
 using Godot;
 
+public class BoardPoint
+{
+    public int x, y;
+
+    public BoardPoint(int x, int y) 
+    {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+
 public class Board2D: Node2D 
 {
     private Vector2 size 
@@ -41,12 +53,6 @@ public class Board2D: Node2D
 
     private void updateLocation(Piece2D piece, bool isInLocation) 
     {
-        Vector2 viewPortSize = GetViewport().Size;
-        int marginX = (int)((viewPortSize.x - size.x) * 0.5f);
-        int marginY = (int)((viewPortSize.x - size.x) * 0.5f);
-
-        //  GD.Print("Update location");
-
         foreach(SquareNode part in piece.Shape.Parts)
         {
              if (part.GlobalPosition.y < 0) 
@@ -54,14 +60,8 @@ public class Board2D: Node2D
                 continue;
             }
 
-            int col = (int)Mathf.Floor((part.GlobalPosition.x - marginX) / (squareSize.x ));
-            int row = (int)Mathf.Floor(part.GlobalPosition.y / (squareSize.y));
-
-            
-            // GD.Print("Col: " + col + " Row: " + row);
-            // GD.Print("GlobalPosition :" + part.GlobalPosition);
-
-            boardPieces[col, row] = isInLocation;
+            BoardPoint point = pointForNode(part);
+            boardPieces[point.x, point.y] = isInLocation;
         }
     }
 
@@ -75,11 +75,20 @@ public class Board2D: Node2D
         updateLocation(piece, true);
     }
 
-    public bool CanMove(Piece2D piece)
+    public BoardPoint pointForNode(Node2D node) 
     {
         Vector2 viewPortSize = GetViewport().Size;
         int marginX = (int)((viewPortSize.x - size.x) * 0.5f);
+        int marginY = (int)((viewPortSize.x - size.x) * 0.5f);
 
+        int col = (int)Mathf.Floor((node.GlobalPosition.x - marginX) / (squareSize.x ));
+        int row = (int)Mathf.Floor(node.GlobalPosition.y / (squareSize.y));
+
+        return new BoardPoint(col, row);
+    }
+
+    public bool CanMove(Piece2D piece)
+    {
         foreach(SquareNode part in piece.Shape.Parts)
         {
             if (part.GlobalPosition.y < 0) 
@@ -92,15 +101,13 @@ public class Board2D: Node2D
                 continue;
             }
             
-            int col = (int)Mathf.Floor((part.GlobalPosition.x - marginX) / squareSize.x);
-            int row = (int)Mathf.Floor(part.GlobalPosition.y / squareSize.y);
-            row += 1;
+            BoardPoint point = pointForNode(part);
+            point.y += 1;
 
-            if (row >= rowCount - 1) { return false; }
-
-            if (boardPieces[col, row] == true)
+            if (point.y >= rowCount - 1) 
             {
-                return false;
+                printBoard();
+                return false; 
             }
         }
 

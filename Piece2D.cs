@@ -3,18 +3,16 @@ using Godot;
 public class Piece2D: Node2D
 {
     private float time = 0.0f;
-    const float TIME_TO_MOVE = 0.2f;
+    private const float TIME_TO_MOVE = 1.0f;
 
-	public Vector2 velocity 
+	private Vector2 velocity 
     {
-        get 
-        {
-            return new Vector2(0, SquareSize.y);
-        }
+        get { return new Vector2(SquareSize.x, SquareSize.y); }
     }
 
     private bool isMoving;
-    public bool IsMoving {
+    public bool IsMoving 
+    {
         get { return isMoving; }
     }
 
@@ -22,7 +20,6 @@ public class Piece2D: Node2D
     public PieceShape Shape
     {
         get {return shape;}
-
         set 
         {
             this.shape = value;
@@ -46,12 +43,10 @@ public class Piece2D: Node2D
 
     public Board2D Board;
 
-    public Piece2D()
+    public Piece2D() { }
+
+    public void stopMoving() 
     {
-
-    }
-
-    public void stopMoving() {
         this.isMoving = false;
     }
 
@@ -76,38 +71,46 @@ public class Piece2D: Node2D
             }
 
             Board.resetLocation(this);
-            this.GlobalTransform = GlobalTransform.Translated(velocity);
-
+            this.GlobalTransform = GlobalTransform.Translated(velocity * Vector2.Down);
             Board.setLocation(this);
-
-            // GD.Print("Board:");
-            // Board.printBoard();
-            
 
             Update();
         }
     }
 
+    public override void _Input(InputEvent inputEvent)
+	{
+        if (!isMoving) { return; }
+
+		if (inputEvent.IsActionPressed("rotate_right"))
+		{
+            Board.resetLocation(this);
+            shape.rotateRight();
+            Board.setLocation(this);
+		}
+        else if (inputEvent.IsActionPressed("rotate_left"))
+		{
+            Board.resetLocation(this);
+            shape.rotateLeft();
+            Board.setLocation(this);
+		}
+        else if (inputEvent.IsActionPressed("move_right"))
+        {
+            Board.resetLocation(this);
+            this.GlobalTransform = GlobalTransform.Translated(velocity * Vector2.Right);
+            Board.setLocation(this);
+        }
+        else if (inputEvent.IsActionPressed("move_left"))
+        {
+            Board.resetLocation(this);
+            this.GlobalTransform = GlobalTransform.Translated(velocity * Vector2.Left);
+            Board.setLocation(this);
+        }
+	}
+
     public override void _Draw() 
     {
 		shape.drawIn(this);
 	}
-
-    public void adjustPositionForCollisionWithFloor(Vector2 viewPortSize) 
-    {
-        Position = new Vector2(Position.x, Position.y - (viewPortSize.y - Position.y));
-    }
-
-    public bool hasCollidedWithFloor(Vector2 viewPortSize) 
-    {
-        return Position.y + (shape.Size.y * 0.5f) >= viewPortSize.y;
-    }
-
-    public bool hasCollidedWithSquare(SquareNode node) 
-    {
-        return false;
-    }
-
-
 
 }

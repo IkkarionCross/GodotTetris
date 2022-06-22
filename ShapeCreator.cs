@@ -15,6 +15,26 @@ public class ShapeCreator : Node2D
 
 	private Vector2 viewPortSize;
 
+	private Piece2D createZ()
+	{
+		Piece2D fallingPiece = new Piece2D();
+		fallingPiece.Type = PieceType.T;
+		fallingPiece.Shape = new ZShape(board2D.squareSize);
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Down * board2D.squareSize.x  * 4.5f) + (Vector2.Left * board2D.squareSize.x * 2);
+		fallingPiece.Board = board2D;
+		return fallingPiece;
+	}
+
+	private Piece2D createT()
+	{
+		Piece2D fallingPiece = new Piece2D();
+		fallingPiece.Type = PieceType.T;
+		fallingPiece.Shape = new TShape(board2D.squareSize);
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 3);
+		fallingPiece.Board = board2D;
+		return fallingPiece;
+	}
+
 	private Piece2D createI()
 	{
 		Piece2D fallingPiece = new Piece2D();
@@ -65,10 +85,8 @@ public class ShapeCreator : Node2D
 		}
 		board2D = GetNode<Board2D>(boardNode);
 
-		GD.Print("Square size: " + board2D.squareSize);
-
 		viewPortSize = GetViewportRect().Size;
-		Piece2D piece1 = createI();
+		Piece2D piece1 = createZ();
         AddChild(piece1);
 	}
 
@@ -83,12 +101,12 @@ public class ShapeCreator : Node2D
 				return;
 			}
             time = 0;
-			Piece2D piece = createSquare();
-        	AddChild(piece);
+			// Piece2D piece = createSquare();
+        	// AddChild(piece);
 			created++;
 		}
  	}
-	
+
 	public override void _Draw() {
 	}
 }

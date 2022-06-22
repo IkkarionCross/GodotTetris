@@ -4,7 +4,7 @@
 [ext_resource path="res://Board2D.cs" type="Script" id=4]
 
 [node name="World" type="YSort"]
-position = Vector2( -2, 0 )
+position = Vector2( -4, 0 )
 script = ExtResource( 3 )
 boardNode = NodePath("Board")
 
