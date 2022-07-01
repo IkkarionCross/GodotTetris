@@ -1,8 +1,25 @@
 using Godot;
+using System;
 
 public enum PieceType 
 {
-	square, I, T, Z, S, L, J
+	square, I, T, Z, L, J
+}
+
+public static class RandomPieceType
+{
+	public static PieceType random()
+	{
+		PieceType[] types = (PieceType[])typeof(PieceType).GetEnumValues();
+
+		RandomNumberGenerator rand = new RandomNumberGenerator();
+		rand.Seed = (ulong)DateTime.Now.Ticks;
+		int randomInt = (int)Mathf.Floor(rand.Randf() * (types.Length - 1));
+
+		GD.Print("The random int: " + randomInt);
+		
+		return types[randomInt];
+	}
 }
 
 public interface IPieceShape 
@@ -66,7 +83,6 @@ public abstract class PieceShape: IPieceShape {
 		{
 			pivot = value;
 		}
-		
 	}
 
 	public PieceShape(Vector2 squareSize) {
@@ -130,8 +146,8 @@ public class SquareShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(-squareSize.x, -squareSize.y), squareSize, new Color(0,0,1,1), false);
-		SquareNode node2 = new SquareNode(new Vector2(0            , -squareSize.y), squareSize, new Color(0,0,1,1), false);
+		SquareNode node1 = new SquareNode(new Vector2(-squareSize.x, -squareSize.y), squareSize, new Color(0,0,1,1), true);
+		SquareNode node2 = new SquareNode(new Vector2(0            , -squareSize.y), squareSize, new Color(0,0,1,1), true);
 		SquareNode node3 = new SquareNode(new Vector2(-squareSize.x, 0            ), squareSize, new Color(0,0,1,1), true);
 		SquareNode node4 = new SquareNode(    Vector2.Zero                         , squareSize , new Color(0,0,1,1), true);
 
@@ -169,8 +185,8 @@ public class LShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(0			  , -squareSize.y * 2), squareSize, new Color(0,0,1,1), false);
-		SquareNode node2 = new SquareNode(new Vector2(0			  , -squareSize.y    ), squareSize, new Color(0,0,1,1), false);
+		SquareNode node1 = new SquareNode(new Vector2(0			  , -squareSize.y * 2), squareSize, new Color(0,0,1,1), true);
+		SquareNode node2 = new SquareNode(new Vector2(0			  , -squareSize.y    ), squareSize, new Color(0,0,1,1), true);
 		SquareNode node3 = new SquareNode(new Vector2(0			  , 0				 ), squareSize, new Color(0,0,1,1), true);
 		SquareNode node4 = new SquareNode(new Vector2(squareSize.x, 0				 ), squareSize, new Color(0,0,1,1), true);
 
@@ -205,8 +221,8 @@ public class JShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(0			   , -squareSize.y * 2), squareSize, new Color(0,0,1,1), false);
-		SquareNode node2 = new SquareNode(new Vector2(0			   , -squareSize.y    ), squareSize, new Color(0,0,1,1), false);
+		SquareNode node1 = new SquareNode(new Vector2(0			   , -squareSize.y * 2), squareSize, new Color(0,0,1,1), true);
+		SquareNode node2 = new SquareNode(new Vector2(0			   , -squareSize.y    ), squareSize, new Color(0,0,1,1), true);
 		SquareNode node3 = new SquareNode(new Vector2(0			   , 0				  ), squareSize, new Color(0,0,1,1), true);
 		SquareNode node4 = new SquareNode(new Vector2(-squareSize.x, 0				  ), squareSize, new Color(0,0,1,1), true);
 
@@ -242,8 +258,8 @@ public class IShape: PieceShape
 	protected override void construct()
 	{
 		SquareNode node1 = new SquareNode(new Vector2(0, -squareSize.y * 3), squareSize, new Color(0,0,1,1), true);
-		SquareNode node2 = new SquareNode(new Vector2(0, -squareSize.y * 2), squareSize, new Color(0,0,1,1), false);
-		SquareNode node3 = new SquareNode(new Vector2(0, -squareSize.y    ), squareSize, new Color(0,0,1,1), false);
+		SquareNode node2 = new SquareNode(new Vector2(0, -squareSize.y * 2), squareSize, new Color(0,0,1,1), true);
+		SquareNode node3 = new SquareNode(new Vector2(0, -squareSize.y    ), squareSize, new Color(0,0,1,1), true);
 		SquareNode node4 = new SquareNode(new Vector2(0, 0				  ), squareSize, new Color(0,0,1,1), true);
 
 		this._squareParts[0] = node1;
@@ -278,7 +294,7 @@ public class TShape: PieceShape
 	protected override void construct()
 	{
 		SquareNode node1 = new SquareNode(new Vector2(0           , -squareSize.y * 2), squareSize, new Color(0,0,1,1), true);
-		SquareNode node2 = new SquareNode(new Vector2(0           , -squareSize.y * 1), squareSize, new Color(0,0,1,1), false);
+		SquareNode node2 = new SquareNode(new Vector2(0           , -squareSize.y * 1), squareSize, new Color(0,0,1,1), true);
 		SquareNode node3 = new SquareNode(new Vector2(0           , 0                ), squareSize, new Color(0,0,1,1), true);
 		SquareNode node4 = new SquareNode(new Vector2(squareSize.x, -squareSize.y * 1), squareSize, new Color(0,0,1,1), true);
 		

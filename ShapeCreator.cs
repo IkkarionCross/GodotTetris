@@ -1,19 +1,69 @@
 using Godot;
 using System;
 
-
 public class ShapeCreator : Node2D
 {
 	private float time = 0.0f;
     const float TIME_TO_CREATE = 3.0f;
-
-
-	private int created = 0;
-
+ 
 	[Export] private NodePath boardNode;
 	private Board2D board2D;
 
 	private Vector2 viewPortSize;
+
+	private Piece2D currentPiece;
+
+	// Called when the node enters the scene tree for the first time.
+	public override void _Ready()
+	{
+		if (boardNode == null)
+		{
+			GD.Print("Did you forget to reference the board?");
+			return;
+		}
+		board2D = GetNode<Board2D>(boardNode);
+		viewPortSize = GetViewportRect().Size;
+
+		addNewPiece();
+	}
+
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	public override void _Process(float delta)
+	{
+		time += delta;
+        if (time >= TIME_TO_CREATE && !currentPiece.IsMoving)
+		{
+            time = 0;
+			addNewPiece();
+		}
+ 	}
+
+	private void addNewPiece() 
+	{
+		currentPiece = create(PieceType.J); //RandomPieceType.random()
+        AddChild(currentPiece);
+	}
+
+	private Piece2D create(PieceType pieceType)
+	{
+		switch (pieceType)
+		{
+			case PieceType.square:
+				return createSquare();
+			case PieceType.I:
+				return createI();
+			case PieceType.J:
+				return createJ();
+			case PieceType.L:
+				return createL();
+			case PieceType.Z:
+				return createZ();
+			case PieceType.T:
+				return createT();
+			default:
+				return null;
+		}
+	}
 
 	private Piece2D createZ()
 	{
@@ -73,40 +123,5 @@ public class ShapeCreator : Node2D
 		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Right * board2D.squareSize.x);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
-	}
-
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-		if (boardNode == null)
-		{
-			GD.Print("Did you forget to reference the board?");
-			return;
-		}
-		board2D = GetNode<Board2D>(boardNode);
-
-		viewPortSize = GetViewportRect().Size;
-		Piece2D piece1 = createZ();
-        AddChild(piece1);
-	}
-
-	//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(float delta)
-	{
-		time += delta;
-        if (time >= TIME_TO_CREATE) 
-		{
-			if (created == 1)
-			{
-				return;
-			}
-            time = 0;
-			// Piece2D piece = createSquare();
-        	// AddChild(piece);
-			created++;
-		}
- 	}
-
-	public override void _Draw() {
 	}
 }

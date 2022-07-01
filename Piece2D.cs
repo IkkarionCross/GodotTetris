@@ -4,8 +4,10 @@ public class Piece2D: Node2D
 {
     private float time = 0.0f;
     private const float TIME_TO_MOVE = 1.0f;
+    private const float FAST_FALL_MULTIPLIER =  0.05f;
+    private float timeToMove = 0.0f;
 
-	private Vector2 velocity 
+	private Vector2 velocity
     {
         get { return new Vector2(SquareSize.x, SquareSize.y); }
     }
@@ -35,8 +37,9 @@ public class Piece2D: Node2D
         }
 	}
 
-    public Vector2 SquareSize {
-        get {return shape.SquareSize;}
+    public Vector2 SquareSize 
+    {
+        get { return shape.SquareSize; }
     } 
 
     public Vector2 startPosition;
@@ -52,6 +55,7 @@ public class Piece2D: Node2D
 
     public override void _Ready()
 	{
+        this.timeToMove = TIME_TO_MOVE;
         this.isMoving = true;
         shape.drawIn(this);
 	}
@@ -61,10 +65,11 @@ public class Piece2D: Node2D
         if (!isMoving) { return; }
 
         time += delta;
-        if (time >= TIME_TO_MOVE) {
+        if (time >= timeToMove) 
+        {
             time = 0;
 
-            if (!Board.CanMove(this))
+            if (!Board.CanMoveDown(this))
             {
                 isMoving = false;
                 return;
@@ -86,6 +91,12 @@ public class Piece2D: Node2D
 		{
             Board.resetLocation(this);
             shape.rotateRight();
+            
+            if (!Board.CanMoveDown(this))
+            {
+                shape.rotateLeft();
+            }
+
             Board.setLocation(this);
 		}
         else if (inputEvent.IsActionPressed("rotate_left"))
@@ -96,15 +107,34 @@ public class Piece2D: Node2D
 		}
         else if (inputEvent.IsActionPressed("move_right"))
         {
+            if (!Board.CanMoveHorizontal(this, Vector2.Right))
+            {
+                return;
+            }
             Board.resetLocation(this);
             this.GlobalTransform = GlobalTransform.Translated(velocity * Vector2.Right);
             Board.setLocation(this);
         }
         else if (inputEvent.IsActionPressed("move_left"))
         {
+            if (!Board.CanMoveHorizontal(this, Vector2.Left))
+            {
+                return;
+            }
             Board.resetLocation(this);
             this.GlobalTransform = GlobalTransform.Translated(velocity * Vector2.Left);
             Board.setLocation(this);
+        }
+        else if (inputEvent.IsActionPressed("move_down"))
+        {
+            Board.resetLocation(this);
+            timeToMove = TIME_TO_MOVE * FAST_FALL_MULTIPLIER;
+            Board.setLocation(this);
+        }
+
+        if (inputEvent.IsActionReleased("move_down")) 
+        {
+            timeToMove = TIME_TO_MOVE;
         }
 	}
 
