@@ -21,7 +21,7 @@ public class Board2D: Node2D
     }
     public Vector2 Size 
     {
-        get { return new Vector2(180, 372); }
+        get { return size; }
     }
     private const int colCount = 10;
     private const int rowCount = 20;
@@ -33,37 +33,50 @@ public class Board2D: Node2D
     
     private bool[,] boardPieces;
 
+    private float marginHorizontal 
+    {
+        get 
+        {
+            float marginWidth = (GetViewport().Size.x - size.x) * 0.5f;
+            return marginWidth + squareSize.x;
+        }
+    }
+
+    private float marginVertical
+    {
+        get { return (GetViewport().Size.y - size.y) * 0.5f; }
+    }
+
+    private Color boardColor 
+    {
+        get { return Colors.DarkGray; }
+    }
+
     Board2D()
     {
         this.boardPieces = new bool[colCount, rowCount];
     }
 
-    public override void _Ready()
-	{
-    }
+    public override void _Ready() {}
 
-    public override void _Draw() {
-        Vector2 viewPortSize = GetViewport().Size;
-
-        int marginWidth = (int)((viewPortSize.x - size.x) * 0.5f);
-        int marginHeight = (int)((viewPortSize.y - size.y) * 0.5f);
-
-        for (int c = 0; c <= colCount; c++)
+    public override void _Draw() 
+    {
+        for (int c = 0; c < colCount; c++)
         {
-            float positionX = marginWidth + (c * squareSize.x);
-            Vector2 start = new Vector2(positionX, marginHeight);
+            float positionX = marginHorizontal + (c * squareSize.x) ;
+            Vector2 start = new Vector2(positionX, marginVertical);
             Vector2 end   = new Vector2(positionX, 353);
 
-            this.DrawLine(start, end, new Color(1,0,0,1), 0.5f);
+            this.DrawLine(start, end, boardColor, 0.5f);
         }
 
         for (int r = 0; r < rowCount; r++)
         {
-            float positionY = marginHeight + (r * squareSize.y);
-            Vector2 start = new Vector2(marginWidth, positionY);
+            float positionY = marginVertical + (r * squareSize.y);
+            Vector2 start = new Vector2(marginHorizontal, positionY);
             Vector2 end   = new Vector2(218, positionY);
 
-            this.DrawLine(start, end, new Color(1,0,0,1), 0.5f);
+            this.DrawLine(start, end, boardColor, 0.5f);
         }
 	}
 
@@ -102,7 +115,7 @@ public class Board2D: Node2D
         return new BoardPoint(col, row);
     }
 
-    public bool CanMoveDown(Piece2D piece)
+    public bool CanMove(Piece2D piece, Vector2 direction)
     {
         List<BoardPoint> beforeMovement = new List<BoardPoint>();
 
@@ -115,38 +128,14 @@ public class Board2D: Node2D
             }
 
             BoardPoint point = pointForNode(part);
-            point.y += 1;
+            point.x += 1 * (int)direction.x;
+            point.y += 1 * (int)direction.y;
 
             if (point.y >= rowCount - 1) 
             {
                 // printBoard();
                 return false;
             }
-           
-            if (boardPieces[point.x, point.y] == true &&
-                !isCollidingWithItself(point, piece.Shape.Parts))
-            {
-                // printBoard();
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public bool CanMoveHorizontal(Piece2D piece, Vector2 direction)
-    {
-        List<BoardPoint> beforeMovement = new List<BoardPoint>();
-
-        foreach(SquareNode part in piece.Shape.Parts)
-        {
-            if (!part.IsCollidable) 
-            {
-                continue;
-            }
-
-            BoardPoint point = pointForNode(part);
-            point.x += 1 * (int)direction.x;
 
             if (point.x >= colCount - 1) 
             {
@@ -159,7 +148,7 @@ public class Board2D: Node2D
                 // printBoard();
                 return false;
             }
-           
+
             if (boardPieces[point.x, point.y] == true &&
                 !isCollidingWithItself(point, piece.Shape.Parts))
             {
@@ -184,7 +173,12 @@ public class Board2D: Node2D
     {
         foreach(SquareNode part in piece.Shape.Parts)
         {
-             if (part.GlobalPosition.y < 0) 
+            if (part.GlobalPosition.x < marginHorizontal) 
+            {
+                continue;
+            }
+
+            if (part.GlobalPosition.y < 0) 
             {
                 continue;
             }

@@ -49,11 +49,13 @@ public class SquareNode: Node2D
 
 	public override void _Draw() 
 	{
-		this.DrawRect(new Rect2(Vector2.Zero, size), new Color(0,0,1,1));
+		this.DrawRect(new Rect2(Vector2.Zero, size), color);
 	}
 }
 
 public abstract class PieceShape: IPieceShape {
+	protected Color color;
+
 	protected Vector2 squareSize;
 	public  Vector2 SquareSize 
 	{
@@ -134,6 +136,11 @@ public abstract class PieceShape: IPieceShape {
 
 public class SquareShape: PieceShape 
 {
+	protected new Color color
+	{
+		get { return Colors.Yellow; }
+	}
+
 	public SquareShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
@@ -146,10 +153,10 @@ public class SquareShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(-squareSize.x, -squareSize.y), squareSize, new Color(0,0,1,1), true);
-		SquareNode node2 = new SquareNode(new Vector2(0            , -squareSize.y), squareSize, new Color(0,0,1,1), true);
-		SquareNode node3 = new SquareNode(new Vector2(-squareSize.x, 0            ), squareSize, new Color(0,0,1,1), true);
-		SquareNode node4 = new SquareNode(    Vector2.Zero                         , squareSize , new Color(0,0,1,1), true);
+		SquareNode node1 = new SquareNode(new Vector2(-squareSize.x, -squareSize.y), squareSize, color, true);
+		SquareNode node2 = new SquareNode(new Vector2(0            , -squareSize.y), squareSize, color, true);
+		SquareNode node3 = new SquareNode(new Vector2(-squareSize.x, 0            ), squareSize, color, true);
+		SquareNode node4 = new SquareNode(    Vector2.Zero                         , squareSize, color, true);
 
 		this._squareParts[0] = node1;
 		this._squareParts[1] = node2;
@@ -173,6 +180,11 @@ public class SquareShape: PieceShape
 
 public class LShape: PieceShape 
 {
+	protected new Color color
+	{
+		get { return Colors.ForestGreen; }
+	}
+
 	public LShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
@@ -185,10 +197,10 @@ public class LShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(0			  , -squareSize.y * 2), squareSize, new Color(0,0,1,1), true);
-		SquareNode node2 = new SquareNode(new Vector2(0			  , -squareSize.y    ), squareSize, new Color(0,0,1,1), true);
-		SquareNode node3 = new SquareNode(new Vector2(0			  , 0				 ), squareSize, new Color(0,0,1,1), true);
-		SquareNode node4 = new SquareNode(new Vector2(squareSize.x, 0				 ), squareSize, new Color(0,0,1,1), true);
+		SquareNode node1 = new SquareNode(new Vector2(0			  , -squareSize.y * 2), squareSize, color, true);
+		SquareNode node2 = new SquareNode(new Vector2(0			  , -squareSize.y    ), squareSize, color, true);
+		SquareNode node3 = new SquareNode(new Vector2(0			  , 0				 ), squareSize, color, true);
+		SquareNode node4 = new SquareNode(new Vector2(squareSize.x, 0				 ), squareSize, color, true);
 
 		this._squareParts[0] = node1;
 		this._squareParts[1] = node2;
@@ -209,6 +221,11 @@ public class LShape: PieceShape
 
 public class JShape: PieceShape 
 {
+	protected new Color color
+	{
+		get { return Colors.WebPurple; }
+	}
+
 	public JShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
@@ -221,10 +238,10 @@ public class JShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(0			   , -squareSize.y * 2), squareSize, new Color(0,0,1,1), true);
-		SquareNode node2 = new SquareNode(new Vector2(0			   , -squareSize.y    ), squareSize, new Color(0,0,1,1), true);
-		SquareNode node3 = new SquareNode(new Vector2(0			   , 0				  ), squareSize, new Color(0,0,1,1), true);
-		SquareNode node4 = new SquareNode(new Vector2(-squareSize.x, 0				  ), squareSize, new Color(0,0,1,1), true);
+		SquareNode node1 = new SquareNode(new Vector2(0			   , -squareSize.y * 2), squareSize, color, true);
+		SquareNode node2 = new SquareNode(new Vector2(0			   , -squareSize.y    ), squareSize, color, true);
+		SquareNode node3 = new SquareNode(new Vector2(0			   , 0				  ), squareSize, color, true);
+		SquareNode node4 = new SquareNode(new Vector2(-squareSize.x, 0				  ), squareSize, color, true);
 
 		this._squareParts[0] = node1;
 		this._squareParts[1] = node2;
@@ -245,6 +262,11 @@ public class JShape: PieceShape
 
 public class IShape: PieceShape 
 {
+	protected new Color color
+	{
+		get { return Colors.RoyalBlue; }
+	}
+
 	public IShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
@@ -257,10 +279,10 @@ public class IShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(0, -squareSize.y * 3), squareSize, new Color(0,0,1,1), true);
-		SquareNode node2 = new SquareNode(new Vector2(0, -squareSize.y * 2), squareSize, new Color(0,0,1,1), true);
-		SquareNode node3 = new SquareNode(new Vector2(0, -squareSize.y    ), squareSize, new Color(0,0,1,1), true);
-		SquareNode node4 = new SquareNode(new Vector2(0, 0				  ), squareSize, new Color(0,0,1,1), true);
+		SquareNode node1 = new SquareNode(new Vector2(0, -squareSize.y * 3), squareSize, color, true);
+		SquareNode node2 = new SquareNode(new Vector2(0, -squareSize.y * 2), squareSize, color, true);
+		SquareNode node3 = new SquareNode(new Vector2(0, -squareSize.y    ), squareSize, color, true);
+		SquareNode node4 = new SquareNode(new Vector2(0, 0				  ), squareSize, color, true);
 
 		this._squareParts[0] = node1;
 		this._squareParts[1] = node2;
@@ -281,6 +303,11 @@ public class IShape: PieceShape
 
 public class TShape: PieceShape 
 {
+	protected new Color color
+	{
+		get { return Colors.IndianRed; }
+	}
+
 	public TShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
@@ -293,10 +320,10 @@ public class TShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(0           , -squareSize.y * 2), squareSize, new Color(0,0,1,1), true);
-		SquareNode node2 = new SquareNode(new Vector2(0           , -squareSize.y * 1), squareSize, new Color(0,0,1,1), true);
-		SquareNode node3 = new SquareNode(new Vector2(0           , 0                ), squareSize, new Color(0,0,1,1), true);
-		SquareNode node4 = new SquareNode(new Vector2(squareSize.x, -squareSize.y * 1), squareSize, new Color(0,0,1,1), true);
+		SquareNode node1 = new SquareNode(new Vector2(0           , -squareSize.y * 2), squareSize, color, true);
+		SquareNode node2 = new SquareNode(new Vector2(0           , -squareSize.y * 1), squareSize, color, true);
+		SquareNode node3 = new SquareNode(new Vector2(0           , 0                ), squareSize, color, true);
+		SquareNode node4 = new SquareNode(new Vector2(squareSize.x, -squareSize.y * 1), squareSize, color, true);
 		
 		this._squareParts[0] = node1;
 		this._squareParts[1] = node2;
@@ -317,6 +344,10 @@ public class TShape: PieceShape
 
 public class ZShape: PieceShape 
 {
+	protected new Color color
+	{
+		get { return Colors.DarkOrange; }
+	}
 	public ZShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
@@ -329,10 +360,10 @@ public class ZShape: PieceShape
 
 	protected override void construct()
 	{
-		SquareNode node1 = new SquareNode(new Vector2(-squareSize.x, -squareSize.y - squareSize.y * 0.5f), squareSize, new Color(0,0,1,1), true);
-		SquareNode node2 = new SquareNode(new Vector2(-squareSize.x, -squareSize.y * 0.5f               ), squareSize, new Color(0,0,1,1), true);
-		SquareNode node4 = new SquareNode(new Vector2(0            , -squareSize.y * 0.5f               ), squareSize, new Color(0,0,1,1), true);
-		SquareNode node3 = new SquareNode(new Vector2(0            , squareSize.y  * 0.5f               ), squareSize, new Color(0,0,1,1), true);
+		SquareNode node1 = new SquareNode(new Vector2(-squareSize.x, -squareSize.y - squareSize.y * 0.5f), squareSize, color, true);
+		SquareNode node2 = new SquareNode(new Vector2(-squareSize.x, -squareSize.y * 0.5f               ), squareSize, color, true);
+		SquareNode node4 = new SquareNode(new Vector2(0            , -squareSize.y * 0.5f               ), squareSize, color, true);
+		SquareNode node3 = new SquareNode(new Vector2(0            , squareSize.y  * 0.5f               ), squareSize, color, true);
 
 		this._squareParts[0] = node1;
 		this._squareParts[1] = node2;

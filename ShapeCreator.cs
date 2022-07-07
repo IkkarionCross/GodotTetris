@@ -40,7 +40,8 @@ public class ShapeCreator : Node2D
 
 	private void addNewPiece() 
 	{
-		currentPiece = create(PieceType.J); //RandomPieceType.random()
+		PieceType type = RandomPieceType.random();
+		currentPiece = create(type); 
         AddChild(currentPiece);
 	}
 

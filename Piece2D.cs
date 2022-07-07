@@ -69,7 +69,7 @@ public class Piece2D: Node2D
         {
             time = 0;
 
-            if (!Board.CanMoveDown(this))
+            if (!Board.CanMove(this, Vector2.Down))
             {
                 isMoving = false;
                 return;
@@ -92,7 +92,7 @@ public class Piece2D: Node2D
             Board.resetLocation(this);
             shape.rotateRight();
             
-            if (!Board.CanMoveDown(this))
+            if (!Board.CanMove(this, Vector2.Down) || !Board.CanMove(this, Vector2.Right))
             {
                 shape.rotateLeft();
             }
@@ -103,11 +103,15 @@ public class Piece2D: Node2D
 		{
             Board.resetLocation(this);
             shape.rotateLeft();
+            if (!Board.CanMove(this, Vector2.Down) || !Board.CanMove(this, Vector2.Left))
+            {
+                shape.rotateRight();
+            }
             Board.setLocation(this);
 		}
         else if (inputEvent.IsActionPressed("move_right"))
         {
-            if (!Board.CanMoveHorizontal(this, Vector2.Right))
+            if (!Board.CanMove(this, Vector2.Right))
             {
                 return;
             }
@@ -117,7 +121,7 @@ public class Piece2D: Node2D
         }
         else if (inputEvent.IsActionPressed("move_left"))
         {
-            if (!Board.CanMoveHorizontal(this, Vector2.Left))
+            if (!Board.CanMove(this, Vector2.Left))
             {
                 return;
             }
