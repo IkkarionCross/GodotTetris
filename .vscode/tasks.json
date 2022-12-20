@@ -13,6 +13,24 @@
                 "-q"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "buildDotnet",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
         }
     ]
 }

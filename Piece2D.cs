@@ -76,7 +76,7 @@ public class Piece2D: Node2D
             }
 
             Board.resetLocation(this);
-            this.GlobalTransform = GlobalTransform.Translated(velocity * Vector2.Down);
+            this.MoveDown(velocity);
             Board.setLocation(this);
 
             Update();
@@ -146,5 +146,19 @@ public class Piece2D: Node2D
     {
 		shape.drawIn(this);
 	}
+
+    public void MoveDown(Vector2 velocity)
+    {
+        this.GlobalTransform = GlobalTransform.Translated(velocity * Vector2.Down);
+    }
+
+    public void RemoveNodeAt(ulong nodeId)
+    {
+        Node2D removedNode = shape.Parts.Find(item => { return item.GetInstanceId() == nodeId; });
+        this.RemoveChild(removedNode);
+        int RemovedAll = shape.Parts.RemoveAll(item => { return item.GetInstanceId() == nodeId; });
+
+        GD.Print("### RemovedAll: " + RemovedAll + " #####");
+    }
 
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -9,6 +10,20 @@ public class BoardPoint
     {
         this.x = x;
         this.y = y;
+    }
+}
+
+public class Block
+{
+    public bool isFilled;
+    public ulong nodeId;
+    public Piece2D piece;
+
+    public SquareNode part;
+
+    public Block() 
+    {
+        this.isFilled = false;
     }
 }
 
@@ -31,7 +46,7 @@ public class Board2D: Node2D
         get { return new Vector2((size.x / colCount), (size.y / rowCount)); }
     }
     
-    private bool[,] boardPieces;
+    private Block[,] boardBlocks;
 
     private float marginHorizontal 
     {
@@ -54,40 +69,101 @@ public class Board2D: Node2D
 
     Board2D()
     {
-        this.boardPieces = new bool[colCount, rowCount];
+        this.boardBlocks = new Block[colCount, rowCount];
     }
 
-    public override void _Ready() {}
+    public override void _Ready() 
+    {
+        this.PauseMode = PauseModeEnum.Process;
+        for (int i = 0; i < colCount; i++)
+        {
+            for (int j = 0; j < rowCount; j++)
+            {
+                this.boardBlocks[i, j] = new Block();
+            }
+        }
+    }
+
+    public override void _Process(float delta) 
+    {
+        // remover as linhas somente quando uma peça ficar em sua posição definitiva
+        // modificar CanMove para retornar alguns estados: 
+        // 1. moveable
+        // 2. unmoveable
+        // 3. settledDown --> a peça está no local definitivo e não pode mais ser movida pelo usuário
+        // 
+        // Uma vez que a peça tenha sido consolidada
+        // chamar o método para verificar se há linhas para remover
+        // O método deve checar todas as linhas uma a uma e adicionar todas as peças das linhas em uma lista para futura
+        // remoção. 
+        // Essa lista deverá ser percorrida passando o Id do SquareNode a ser removido para o método removeNode do PieceShape
+        // dessa forma os blocos corretos serão removidos do tabuleiro. 
+        // --> método tetris(), deve retornar a quantidade de linhas removidas
+        // Depois de toda a remoção, deve ser criado um método shiftDown(removedLines)
+        // Esse método faz com que as linhas remanescentes no board desçam o tabuleiro pela quantidade de linhas removidas
+    }
 
     public override void _Draw() 
     {
-        for (int c = 0; c < colCount; c++)
+        for (int c = 0; c < colCount+1; c++)
         {
             float positionX = marginHorizontal + (c * squareSize.x) ;
             Vector2 start = new Vector2(positionX, marginVertical);
-            Vector2 end   = new Vector2(positionX, 353);
+            Vector2 end   = new Vector2(positionX, 371);
 
             this.DrawLine(start, end, boardColor, 0.5f);
         }
 
-        for (int r = 0; r < rowCount; r++)
+        for (int r = 0; r < rowCount+1; r++)
         {
             float positionY = marginVertical + (r * squareSize.y);
             Vector2 start = new Vector2(marginHorizontal, positionY);
-            Vector2 end   = new Vector2(218, positionY);
+            Vector2 end   = new Vector2(236, positionY);
 
             this.DrawLine(start, end, boardColor, 0.5f);
         }
 	}
 
+    public override void _Input(InputEvent inputEvent)
+	{
+        if (inputEvent.IsActionPressed("check_tetris"))
+        {
+            List<List<BoardPoint>> blocksToRemove = getBlocksToRemove();
+            
+            if (blocksToRemove.Count == 0) { printBoard(); return; }
+
+            int linesRemoved = tetris(blocksToRemove);
+            shiftDown(linesRemoved);
+        }
+
+        if (inputEvent.IsActionPressed("pause"))
+        {
+            GetTree().Paused = !GetTree().Paused;
+
+            GD.Print("#### PAUSE " + GetTree().Paused +  " ####");
+        }
+    }
+
     public void printBoard() 
     {
         for(int j = 0; j < rowCount; j++)
         {
-            string row = "";
+            string row = "r: " + j + " ";
+            if (j < 10)
+            {
+                row += " ";
+            }
             for(int i = 0; i < colCount; i++)
             {
-                row += " " + boardPieces[i, j].ToString();
+                if (boardBlocks[i, j].isFilled)
+                {
+                    row += " " + boardBlocks[i, j].isFilled.ToString() + " ";
+                }
+                else 
+                {
+                    row += " " + boardBlocks[i, j].isFilled.ToString();
+                }
+                
             }
             GD.Print(row);
         }
@@ -133,26 +209,22 @@ public class Board2D: Node2D
 
             if (point.y >= rowCount - 1) 
             {
-                // printBoard();
                 return false;
             }
 
-            if (point.x >= colCount - 1) 
+            if (point.x >= colCount) 
             {
-                // printBoard();
                 return false;
             }
 
             if (point.x < 0)
             {
-                // printBoard();
                 return false;
             }
 
-            if (boardPieces[point.x, point.y] == true &&
+            if (boardBlocks[point.x, point.y].isFilled == true &&
                 !isCollidingWithItself(point, piece.Shape.Parts))
             {
-                // printBoard();
                 return false;
             }
         }
@@ -173,22 +245,96 @@ public class Board2D: Node2D
     {
         foreach(SquareNode part in piece.Shape.Parts)
         {
-            if (part.GlobalPosition.x < marginHorizontal) 
-            {
-                continue;
-            }
-
-            if (part.GlobalPosition.y < 0) 
-            {
-                continue;
-            }
+            if (part.GlobalPosition.y < 0) { continue; }
 
             BoardPoint point = pointForNode(part);
-            boardPieces[point.x, point.y] = isInLocation;
+            boardBlocks[point.x, point.y] = new Block();
+            boardBlocks[point.x, point.y].nodeId = part.Id;
+            boardBlocks[point.x, point.y].piece = piece;
+            boardBlocks[point.x, point.y].part = part;
+            boardBlocks[point.x, point.y].isFilled = isInLocation;
         }
     }
 
-    private bool isCollidingWithItself(BoardPoint partPoint, Node2D[] parts)
+    private void shiftDown(int removedLines)
+    {
+        float downAmmount = removedLines * squareSize.y;
+        for (int j = rowCount - 1; j >= 0; j--)
+        {
+            for (int i = colCount-1; i >= 0; i--)
+            {
+                if (!boardBlocks[i, j].isFilled) { continue; }
+                SquareNode part = boardBlocks[i, j].part;
+                boardBlocks[i, j].isFilled = false;
+                part.GlobalTransform = part.GlobalTransform.Translated(downAmmount * Vector2.Down);
+
+                Piece2D piece = boardBlocks[i, j].piece;
+                if (piece == null) { continue; }
+                
+                this.resetLocation(piece);
+                this.setLocation(piece);
+            }
+        }
+
+        // for (int j = rowCount - 1; j >= 0; j--)
+        // {
+        //     for (int i = colCount -1; i >= 0; i--)
+        //     {
+        //         Piece2D piece = boardBlocks[i, j].piece;
+        //         if (piece == null) { continue; }
+                
+        //         GD.Print("#### piecetype: " + piece.Shape.Type + " partsCount: " + piece.Shape.Parts.Count + "####");
+        //         this.resetLocation(piece);
+        //         this.setLocation(piece);
+        //     }
+        // }
+    }
+
+    private int tetris(List<List<BoardPoint>> blocksToRemove)
+    {
+        int linesRemoved = blocksToRemove.Count;
+
+        for (int i = 0; i < blocksToRemove.Count; i++)
+        {
+            for (int j = 0; j < blocksToRemove[i].Count; j++)
+            {
+                BoardPoint point = blocksToRemove[i][j];
+                Block block = boardBlocks[point.x, point.y];
+                GD.Print("### Remove Node at: " + block.nodeId + " ###");
+                block.piece.RemoveNodeAt(block.nodeId);
+                boardBlocks[point.x, point.y] = new Block();
+            }
+        }
+
+        return linesRemoved;
+    }
+
+    private List<List<BoardPoint>> getBlocksToRemove()
+    {
+        List<List<BoardPoint>> blocksToRemove = new List<List<BoardPoint>>();
+        
+        for (int j = rowCount - 1; j >= 0; j--)
+        {
+            List<BoardPoint> lineToRemove = new List<BoardPoint>();
+            for (int i = 0; i < colCount; i++)
+            {
+                if (!this.boardBlocks[i, j].isFilled)
+                {
+                    lineToRemove.Clear();
+                    break;
+                }
+                BoardPoint point = new BoardPoint(i, j);
+                lineToRemove.Add(point);
+            }
+            if (lineToRemove.Count == colCount)
+            {
+                blocksToRemove.Add(lineToRemove);
+            }
+        }
+        return blocksToRemove;
+    }
+
+    private bool isCollidingWithItself(BoardPoint partPoint, List<Node2D> parts)
     {
         foreach (var excludePart in parts)
         {
