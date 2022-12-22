@@ -1,17 +1,17 @@
 using Godot;
 
-public class SquareShape: PieceShape 
+public class OShape: PieceShape 
 {
 	protected new Color color
 	{
 		get { return Colors.Yellow; }
 	}
 
-	public SquareShape(Vector2 squareSize) : base(squareSize) 
+	public OShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
 		this.size = new Vector2(squareSize.x * 2, squareSize.y * 2);
-		this.type = PieceType.square;
+		this.type = PieceType.O;
 		
 		construct();
 	}

@@ -275,19 +275,6 @@ public class Board2D: Node2D
                 this.setLocation(piece);
             }
         }
-
-        // for (int j = rowCount - 1; j >= 0; j--)
-        // {
-        //     for (int i = colCount -1; i >= 0; i--)
-        //     {
-        //         Piece2D piece = boardBlocks[i, j].piece;
-        //         if (piece == null) { continue; }
-                
-        //         GD.Print("#### piecetype: " + piece.Shape.Type + " partsCount: " + piece.Shape.Parts.Count + "####");
-        //         this.resetLocation(piece);
-        //         this.setLocation(piece);
-        //     }
-        // }
     }
 
     private int tetris(List<List<BoardPoint>> blocksToRemove)
@@ -300,7 +287,6 @@ public class Board2D: Node2D
             {
                 BoardPoint point = blocksToRemove[i][j];
                 Block block = boardBlocks[point.x, point.y];
-                GD.Print("### Remove Node at: " + block.nodeId + " ###");
                 block.piece.RemoveNodeAt(block.nodeId);
                 boardBlocks[point.x, point.y] = new Block();
             }

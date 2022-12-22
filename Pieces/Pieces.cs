@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public enum PieceType 
 {
-	square, I, T, Z, L, J
+	O, I, T, Z, L, J, S
 }
 
 public interface IPieceShape 

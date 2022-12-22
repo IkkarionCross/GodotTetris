@@ -40,7 +40,7 @@ public class ShapeCreator : Node2D
 
 	private void addNewPiece() 
 	{
-		PieceType type = RandomPieceType.random();
+		PieceType type = RandomPieceGenerator.Instance.Random();
 		currentPiece = create(type); 
         AddChild(currentPiece);
 	}
@@ -49,8 +49,8 @@ public class ShapeCreator : Node2D
 	{
 		switch (pieceType)
 		{
-			case PieceType.square:
-				return createSquare();
+			case PieceType.O:
+				return createO();
 			case PieceType.I:
 				return createI();
 			case PieceType.J:
@@ -61,6 +61,8 @@ public class ShapeCreator : Node2D
 				return createZ();
 			case PieceType.T:
 				return createT();
+			case PieceType.S:
+				return createS();
 			default:
 				return null;
 		}
@@ -71,7 +73,7 @@ public class ShapeCreator : Node2D
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.T;
 		fallingPiece.Shape = new ZShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Down * board2D.squareSize.x  * 4.5f) + (Vector2.Left * board2D.squareSize.x * 2);
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Down * board2D.squareSize.x  * 0.5f) + (Vector2.Left * board2D.squareSize.x * 2);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
@@ -116,11 +118,21 @@ public class ShapeCreator : Node2D
 		return fallingPiece;
 	}
 
-	private Piece2D createSquare()
+	private Piece2D createO()
 	{
 		Piece2D fallingPiece = new Piece2D();
-		fallingPiece.Type = PieceType.square;
-		fallingPiece.Shape = new SquareShape(board2D.squareSize);
+		fallingPiece.Type = PieceType.O;
+		fallingPiece.Shape = new OShape(board2D.squareSize);
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Right * board2D.squareSize.x);
+		fallingPiece.Board = board2D;
+		return fallingPiece;
+	}
+
+	private Piece2D createS()
+	{
+		Piece2D fallingPiece = new Piece2D();
+		fallingPiece.Type = PieceType.S;
+		fallingPiece.Shape = new SShape(board2D.squareSize);
 		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Right * board2D.squareSize.x);
 		fallingPiece.Board = board2D;
 		return fallingPiece;

@@ -4,7 +4,7 @@ public class JShape: PieceShape
 {
 	protected new Color color
 	{
-		get { return Colors.WebPurple; }
+		get { return Colors.DarkViolet; }
 	}
 
 	public JShape(Vector2 squareSize) : base(squareSize) 
