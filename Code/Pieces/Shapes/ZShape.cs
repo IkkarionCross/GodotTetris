@@ -9,7 +9,6 @@ public class ZShape: PieceShape
 	public ZShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
-		this.size = new Vector2(0, 0);
 		this.type = PieceType.T;
 		
 		construct();

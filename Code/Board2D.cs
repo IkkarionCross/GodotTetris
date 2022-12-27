@@ -52,7 +52,7 @@ public class Board2D: Node2D
     {
         get 
         {
-            float marginWidth = (GetViewport().Size.x - size.x) * 0.5f;
+            float marginWidth = (GetViewport().Size.x - size.x + 30) * 0.5f;
             return marginWidth + squareSize.x;
         }
     }
@@ -86,21 +86,12 @@ public class Board2D: Node2D
 
     public override void _Process(float delta) 
     {
-        // remover as linhas somente quando uma peça ficar em sua posição definitiva
-        // modificar CanMove para retornar alguns estados: 
-        // 1. moveable
-        // 2. unmoveable
-        // 3. settledDown --> a peça está no local definitivo e não pode mais ser movida pelo usuário
-        // 
-        // Uma vez que a peça tenha sido consolidada
-        // chamar o método para verificar se há linhas para remover
-        // O método deve checar todas as linhas uma a uma e adicionar todas as peças das linhas em uma lista para futura
-        // remoção. 
-        // Essa lista deverá ser percorrida passando o Id do SquareNode a ser removido para o método removeNode do PieceShape
-        // dessa forma os blocos corretos serão removidos do tabuleiro. 
-        // --> método tetris(), deve retornar a quantidade de linhas removidas
-        // Depois de toda a remoção, deve ser criado um método shiftDown(removedLines)
-        // Esse método faz com que as linhas remanescentes no board desçam o tabuleiro pela quantidade de linhas removidas
+        List<List<BoardPoint>> blocksToRemove = getBlocksToRemove();
+            
+        if (blocksToRemove.Count == 0) { /* printBoard(); */ return; }
+
+        int linesRemoved = tetris(blocksToRemove);
+        shiftDown(linesRemoved);
     }
 
     public override void _Draw() 
@@ -109,7 +100,7 @@ public class Board2D: Node2D
         {
             float positionX = marginHorizontal + (c * squareSize.x) ;
             Vector2 start = new Vector2(positionX, marginVertical);
-            Vector2 end   = new Vector2(positionX, 371);
+            Vector2 end   = new Vector2(positionX, marginVertical + size.y);
 
             this.DrawLine(start, end, boardColor, 0.5f);
         }
@@ -118,7 +109,7 @@ public class Board2D: Node2D
         {
             float positionY = marginVertical + (r * squareSize.y);
             Vector2 start = new Vector2(marginHorizontal, positionY);
-            Vector2 end   = new Vector2(236, positionY);
+            Vector2 end   = new Vector2(size.x + marginHorizontal, positionY);
 
             this.DrawLine(start, end, boardColor, 0.5f);
         }
@@ -130,7 +121,7 @@ public class Board2D: Node2D
         {
             List<List<BoardPoint>> blocksToRemove = getBlocksToRemove();
             
-            if (blocksToRemove.Count == 0) { printBoard(); return; }
+            if (blocksToRemove.Count == 0) { /* printBoard(); */ return; }
 
             int linesRemoved = tetris(blocksToRemove);
             shiftDown(linesRemoved);
@@ -144,31 +135,6 @@ public class Board2D: Node2D
         }
     }
 
-    public void printBoard() 
-    {
-        for(int j = 0; j < rowCount; j++)
-        {
-            string row = "r: " + j + " ";
-            if (j < 10)
-            {
-                row += " ";
-            }
-            for(int i = 0; i < colCount; i++)
-            {
-                if (boardBlocks[i, j].isFilled)
-                {
-                    row += " " + boardBlocks[i, j].isFilled.ToString() + " ";
-                }
-                else 
-                {
-                    row += " " + boardBlocks[i, j].isFilled.ToString();
-                }
-                
-            }
-            GD.Print(row);
-        }
-        
-    }
     public void resetLocation(Piece2D piece) 
     {
         updateLocation(piece, false);
@@ -181,14 +147,22 @@ public class Board2D: Node2D
 
     public BoardPoint pointForNode(Node2D node) 
     {
-        Vector2 viewPortSize = GetViewport().Size;
-        int marginX = (int)((viewPortSize.x - size.x) * 0.5f);
-        int marginY = (int)((viewPortSize.x - size.x) * 0.5f);
+        int marginX = (int)(marginHorizontal);
 
         int col = (int)Mathf.Floor((node.GlobalPosition.x - marginX) / (squareSize.x ));
         int row = (int)Mathf.Floor(node.GlobalPosition.y / (squareSize.y));
 
         return new BoardPoint(col, row);
+    }
+
+    public Vector2 pieceStartPosition(PieceShape shape)
+    {
+        Vector2 viewPortSize = GetViewport().Size;
+        int marginX = (int)marginHorizontal;
+        int marginY = (int)marginVertical;
+        int x = (int)(marginX + (size.x * 0.5f) + (squareSize.x * 2));
+        int y = (int)(marginVertical + squareSize.y + 1 - (squareSize.x * 3));
+        return new Vector2(x, y);
     }
 
     public bool CanMove(Piece2D piece, Vector2 direction)
@@ -230,15 +204,6 @@ public class Board2D: Node2D
         }
 
         return true;
-    }
-
-    public Vector2 pieceStartPosition(PieceShape shape)
-    {
-        Vector2 viewPortSize = GetViewport().Size;
-        int marginX = (int)((viewPortSize.x - size.x) * 0.5f);
-        int x = (int)(marginX + (size.x * 0.5f) - shape.Size.x + (squareSize.x * 2) + 1);
-        int y = (int)(viewPortSize.y - size.y + (squareSize.y * 0.5f) + 1);
-        return new Vector2(x, y);
     }
 
     private void updateLocation(Piece2D piece, bool isInLocation) 
@@ -332,5 +297,31 @@ public class Board2D: Node2D
             }
         }
         return false;
+    }
+
+    public void printBoard() 
+    {
+        for(int j = 0; j < rowCount; j++)
+        {
+            string row = "r: " + j + " ";
+            if (j < 10)
+            {
+                row += " ";
+            }
+            for(int i = 0; i < colCount; i++)
+            {
+                if (boardBlocks[i, j].isFilled)
+                {
+                    row += " " + boardBlocks[i, j].isFilled.ToString() + " ";
+                }
+                else 
+                {
+                    row += " " + boardBlocks[i, j].isFilled.ToString();
+                }
+                
+            }
+            GD.Print(row);
+        }
+        
     }
 }

@@ -10,7 +10,6 @@ public class OShape: PieceShape
 	public OShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
-		this.size = new Vector2(squareSize.x * 2, squareSize.y * 2);
 		this.type = PieceType.O;
 		
 		construct();

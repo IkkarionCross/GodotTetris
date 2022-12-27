@@ -113,7 +113,7 @@ public class ShapeCreator : Node2D
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.L;
 		fallingPiece.Shape = new JShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 3);
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 2);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
@@ -123,7 +123,7 @@ public class ShapeCreator : Node2D
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.O;
 		fallingPiece.Shape = new OShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Right * board2D.squareSize.x);
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 2);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
@@ -133,7 +133,7 @@ public class ShapeCreator : Node2D
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.S;
 		fallingPiece.Shape = new SShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Right * board2D.squareSize.x);
+		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 2);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}

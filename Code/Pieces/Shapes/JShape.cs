@@ -10,7 +10,6 @@ public class JShape: PieceShape
 	public JShape(Vector2 squareSize) : base(squareSize) 
 	{
 		this.squareSize = squareSize;
-		this.size = new Vector2(0, 0);
 		this.type = PieceType.J;
 		
 		construct();

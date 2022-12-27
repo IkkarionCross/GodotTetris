@@ -21,10 +21,6 @@ public abstract class PieceShape: IPieceShape {
 	{
 		get {return squareSize;}
 	}
-	protected Vector2 size;
-	public Vector2 Size {
-		get {return size;}
-	}
 
 	protected PieceType type;
 	public PieceType Type 
