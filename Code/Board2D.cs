@@ -46,6 +46,9 @@ public class Board2D: Node2D
         get { return new Vector2((size.x / colCount), (size.y / rowCount)); }
     }
     
+    [Signal]
+    private delegate void OnLinesRemoved(int linesRemoved);
+
     private Block[,] boardBlocks;
 
     private float marginHorizontal 
@@ -92,6 +95,8 @@ public class Board2D: Node2D
 
         int linesRemoved = tetris(blocksToRemove);
         shiftDown(linesRemoved);
+
+        EmitSignal("OnLinesRemoved", linesRemoved);
     }
 
     public override void _Draw() 
@@ -125,13 +130,6 @@ public class Board2D: Node2D
 
             int linesRemoved = tetris(blocksToRemove);
             shiftDown(linesRemoved);
-        }
-
-        if (inputEvent.IsActionPressed("pause"))
-        {
-            GetTree().Paused = !GetTree().Paused;
-
-            GD.Print("#### PAUSE " + GetTree().Paused +  " ####");
         }
     }
 
