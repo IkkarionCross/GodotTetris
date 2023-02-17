@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Fonts/Jangkar.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://Code/TetrisGod.cs" type="Script" id=2]
-[ext_resource path="res://Code/Board2D.cs" type="Script" id=3]
+[ext_resource path="res://Code/GameState/TetrisGod.cs" type="Script" id=2]
+[ext_resource path="res://Code/Board/Board2D.cs" type="Script" id=3]
 [ext_resource path="res://Code/GameState/Score.cs" type="Script" id=5]
 
 [sub_resource type="DynamicFont" id=1]
@@ -30,7 +30,7 @@ margin_left = 4.0
 margin_top = 44.0
 margin_right = 53.0
 margin_bottom = 75.0
-text = "100000000"
+text = "0"
 autowrap = true
 script = ExtResource( 5 )
 

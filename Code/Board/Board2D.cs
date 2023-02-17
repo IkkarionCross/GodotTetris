@@ -68,12 +68,12 @@ public class Board2D: Node2D
         {
             float positionX = marginHorizontal + (c * SquareSize.x) ;
             Vector2 start = new Vector2(positionX, marginVertical);
-            Vector2 end   = new Vector2(positionX, marginVertical + size.y);
+            Vector2 end   = new Vector2(positionX, marginVertical + size.y -  SquareSize.y);
 
             this.DrawLine(start, end, boardColor, 0.5f);
         }
 
-        for (int r = 0; r < rowCount+1; r++)
+        for (int r = 0; r < rowCount; r++)
         {
             float positionY = marginVertical + (r * SquareSize.y);
             Vector2 start = new Vector2(marginHorizontal, positionY);
