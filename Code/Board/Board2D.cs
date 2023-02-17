@@ -2,50 +2,11 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public class BoardPoint
-{
-    public int x, y;
-
-    public BoardPoint(int x, int y) 
-    {
-        this.x = x;
-        this.y = y;
-    }
-}
-
-public class Block
-{
-    public bool isFilled;
-    public ulong nodeId;
-    public Piece2D piece;
-
-    public SquareNode part;
-
-    public Block() 
-    {
-        this.isFilled = false;
-    }
-}
-
-
 public class Board2D: Node2D 
 {
-    private Vector2 size 
-    {
-        get { return new Vector2(180, 360); }
-    }
-    public Vector2 Size 
-    {
-        get { return size; }
-    }
     private const int colCount = 10;
     private const int rowCount = 20;
 
-    public Vector2 squareSize 
-    {
-        get { return new Vector2((size.x / colCount), (size.y / rowCount)); }
-    }
-    
     [Signal]
     private delegate void OnLinesRemoved(int linesRemoved);
 
@@ -56,7 +17,7 @@ public class Board2D: Node2D
         get 
         {
             float marginWidth = (GetViewport().Size.x - size.x + 30) * 0.5f;
-            return marginWidth + squareSize.x;
+            return marginWidth + SquareSize.x;
         }
     }
 
@@ -68,6 +29,20 @@ public class Board2D: Node2D
     private Color boardColor 
     {
         get { return Colors.DarkGray; }
+    }
+
+    private Vector2 size 
+    {
+        get { return new Vector2(180, 360); }
+    }
+    public Vector2 Size 
+    {
+        get { return size; }
+    }
+
+    public Vector2 SquareSize 
+    {
+        get { return new Vector2((size.x / colCount), (size.y / rowCount)); }
     }
 
     Board2D()
@@ -91,7 +66,7 @@ public class Board2D: Node2D
     {
         for (int c = 0; c < colCount+1; c++)
         {
-            float positionX = marginHorizontal + (c * squareSize.x) ;
+            float positionX = marginHorizontal + (c * SquareSize.x) ;
             Vector2 start = new Vector2(positionX, marginVertical);
             Vector2 end   = new Vector2(positionX, marginVertical + size.y);
 
@@ -100,7 +75,7 @@ public class Board2D: Node2D
 
         for (int r = 0; r < rowCount+1; r++)
         {
-            float positionY = marginVertical + (r * squareSize.y);
+            float positionY = marginVertical + (r * SquareSize.y);
             Vector2 start = new Vector2(marginHorizontal, positionY);
             Vector2 end   = new Vector2(size.x + marginHorizontal, positionY);
 
@@ -112,42 +87,42 @@ public class Board2D: Node2D
 	{
         if (inputEvent.IsActionPressed("check_tetris"))
         {
-            List<List<BoardPoint>> blocksToRemove = getBlocksToRemove();
+            List<List<BoardPoint>> blocksToRemove = GetBlocksToRemove();
             
             if (blocksToRemove.Count == 0) { /* printBoard(); */ return; }
 
-            int linesRemoved = tetris(blocksToRemove);
-            shiftDown(linesRemoved);
+            int linesRemoved = Tetris(blocksToRemove);
+            ShiftDown(linesRemoved);
         }
     }
 
-    public void resetLocation(Piece2D piece) 
+    public void ResetLocation(Piece2D piece) 
     {
-        updateLocation(piece, false);
+        UpdateLocation(piece, false);
     }
 
-    public void setLocation(Piece2D piece)
+    public void SetLocation(Piece2D piece)
     {
-        updateLocation(piece, true);
+        UpdateLocation(piece, true);
     }
 
-    public BoardPoint pointForNode(Node2D node) 
+    public BoardPoint PointForNode(Node2D node) 
     {
         int marginX = (int)(marginHorizontal);
 
-        int col = (int)Mathf.Floor((node.GlobalPosition.x - marginX) / (squareSize.x ));
-        int row = (int)Mathf.Floor(node.GlobalPosition.y / (squareSize.y));
+        int col = (int)Mathf.Floor((node.GlobalPosition.x - marginX) / (SquareSize.x ));
+        int row = (int)Mathf.Floor(node.GlobalPosition.y / (SquareSize.y));
 
         return new BoardPoint(col, row);
     }
 
-    public Vector2 pieceStartPosition(PieceShape shape)
+    public Vector2 PieceStartPosition(PieceShape shape)
     {
         Vector2 viewPortSize = GetViewport().Size;
         int marginX = (int)marginHorizontal;
         int marginY = (int)marginVertical;
-        int x = (int)(marginX + (size.x * 0.5f) + (squareSize.x * 2));
-        int y = (int)(marginVertical + squareSize.y + 1 - (squareSize.x * 3));
+        int x = (int)(marginX + (size.x * 0.5f) + (SquareSize.x * 2));
+        int y = (int)(marginVertical + SquareSize.y + 1 - (SquareSize.x * 3));
         return new Vector2(x, y);
     }
 
@@ -163,7 +138,7 @@ public class Board2D: Node2D
                 continue;
             }
 
-            BoardPoint point = pointForNode(part);
+            BoardPoint point = PointForNode(part);
             point.x += 1 * (int)direction.x;
             point.y += 1 * (int)direction.y;
 
@@ -183,7 +158,7 @@ public class Board2D: Node2D
             }
 
             if (boardBlocks[point.x, point.y].isFilled == true &&
-                !isCollidingWithItself(point, piece.Shape.Parts))
+                !IsCollidingWithItself(point, piece.Shape.Parts))
             {
                 return false;
             }
@@ -192,25 +167,25 @@ public class Board2D: Node2D
         return true;
     }
 
-    public void checkTetris()
+    public void CheckTetris()
     {
-        List<List<BoardPoint>> blocksToRemove = getBlocksToRemove();
+        List<List<BoardPoint>> blocksToRemove = GetBlocksToRemove();
             
         if (blocksToRemove.Count == 0) { /* printBoard(); */ return; }
 
-        int linesRemoved = tetris(blocksToRemove);
-        shiftDown(linesRemoved);
+        int linesRemoved = Tetris(blocksToRemove);
+        ShiftDown(linesRemoved);
 
         EmitSignal("OnLinesRemoved", linesRemoved);
     }
 
-    private void updateLocation(Piece2D piece, bool isInLocation) 
+    private void UpdateLocation(Piece2D piece, bool isInLocation) 
     {
         foreach(SquareNode part in piece.Shape.Parts)
         {
             if (part.GlobalPosition.y < 0) { continue; }
 
-            BoardPoint point = pointForNode(part);
+            BoardPoint point = PointForNode(part);
             boardBlocks[point.x, point.y] = new Block();
             boardBlocks[point.x, point.y].nodeId = part.Id;
             boardBlocks[point.x, point.y].piece = piece;
@@ -219,9 +194,9 @@ public class Board2D: Node2D
         }
     }
 
-    private void shiftDown(int removedLines)
+    private void ShiftDown(int removedLines)
     {
-        float downAmmount = removedLines * squareSize.y;
+        float downAmmount = removedLines * SquareSize.y;
         for (int j = rowCount - 1; j >= 0; j--)
         {
             for (int i = colCount-1; i >= 0; i--)
@@ -234,13 +209,13 @@ public class Board2D: Node2D
                 Piece2D piece = boardBlocks[i, j].piece;
                 if (piece == null) { continue; }
                 
-                this.resetLocation(piece);
-                this.setLocation(piece);
+                this.ResetLocation(piece);
+                this.SetLocation(piece);
             }
         }
     }
 
-    private int tetris(List<List<BoardPoint>> blocksToRemove)
+    private int Tetris(List<List<BoardPoint>> blocksToRemove)
     {
         int linesRemoved = blocksToRemove.Count;
 
@@ -258,7 +233,7 @@ public class Board2D: Node2D
         return linesRemoved;
     }
 
-    private List<List<BoardPoint>> getBlocksToRemove()
+    private List<List<BoardPoint>> GetBlocksToRemove()
     {
         List<List<BoardPoint>> blocksToRemove = new List<List<BoardPoint>>();
         
@@ -283,11 +258,11 @@ public class Board2D: Node2D
         return blocksToRemove;
     }
 
-    private bool isCollidingWithItself(BoardPoint partPoint, List<Node2D> parts)
+    private bool IsCollidingWithItself(BoardPoint partPoint, List<Node2D> parts)
     {
         foreach (var excludePart in parts)
         {
-            BoardPoint pointPreviousMovement = pointForNode(excludePart);
+            BoardPoint pointPreviousMovement = PointForNode(excludePart);
             if (pointPreviousMovement.x == partPoint.x && 
                 pointPreviousMovement.y == partPoint.y) 
             {
@@ -297,7 +272,7 @@ public class Board2D: Node2D
         return false;
     }
 
-    public void printBoard() 
+    public void PrintBoard() 
     {
         for(int j = 0; j < rowCount; j++)
         {

@@ -28,13 +28,10 @@ public class Piece2D: Node2D
         }
     }
 
-	private PieceType _type;
+	private PieceType type;
 	public PieceType Type {
-		get { return _type; }
-        set 
-        {
-            this._type = value;
-        }
+		get { return type; }
+        set { this.type = value; }
 	}
 
     public Vector2 SquareSize 
@@ -42,22 +39,22 @@ public class Piece2D: Node2D
         get { return shape.SquareSize; }
     } 
 
-    public Vector2 startPosition;
+    private Vector2 startPosition;
+    public Vector2 StartPosition
+    {
+        get { return startPosition; }
+        set { startPosition = value; }
+    }
 
     public Board2D Board;
 
     public Piece2D() { }
 
-    public void stopMoving() 
-    {
-        this.isMoving = false;
-    }
-
     public override void _Ready()
 	{
         this.timeToMove = TIME_TO_MOVE;
         this.isMoving = true;
-        shape.drawIn(this);
+        shape.DrawIn(this);
 	}
 
     public override void _Process(float delta) 
@@ -71,14 +68,14 @@ public class Piece2D: Node2D
 
             if (!Board.CanMove(this, Vector2.Down))
             {
-                isMoving = false;
-                Board.setLocation(this);
+                this.isMoving = false;
+                Board.SetLocation(this);
                 return;
             }
 
-            Board.resetLocation(this);
-            this.MoveDown(velocity);
-            Board.setLocation(this);
+            Board.ResetLocation(this);
+            MoveDown(velocity);
+            Board.SetLocation(this);
 
             Update();
         }
@@ -90,25 +87,25 @@ public class Piece2D: Node2D
 
 		if (inputEvent.IsActionPressed("rotate_right"))
 		{
-            Board.resetLocation(this);
-            shape.rotateRight();
+            Board.ResetLocation(this);
+            shape.RotateRight();
             
             if (!Board.CanMove(this, Vector2.Down) || !Board.CanMove(this, Vector2.Right))
             {
-                shape.rotateLeft();
+                shape.RotateLeft();
             }
 
-            Board.setLocation(this);
+            Board.SetLocation(this);
 		}
         else if (inputEvent.IsActionPressed("rotate_left"))
 		{
-            Board.resetLocation(this);
-            shape.rotateLeft();
+            Board.ResetLocation(this);
+            shape.RotateLeft();
             if (!Board.CanMove(this, Vector2.Down) || !Board.CanMove(this, Vector2.Left))
             {
-                shape.rotateRight();
+                shape.RotateRight();
             }
-            Board.setLocation(this);
+            Board.SetLocation(this);
 		}
         else if (inputEvent.IsActionPressed("move_right"))
         {
@@ -116,9 +113,9 @@ public class Piece2D: Node2D
             {
                 return;
             }
-            Board.resetLocation(this);
+            Board.ResetLocation(this);
             this.GlobalTransform = GlobalTransform.Translated(velocity * Vector2.Right);
-            Board.setLocation(this);
+            Board.SetLocation(this);
         }
         else if (inputEvent.IsActionPressed("move_left"))
         {
@@ -126,15 +123,15 @@ public class Piece2D: Node2D
             {
                 return;
             }
-            Board.resetLocation(this);
+            Board.ResetLocation(this);
             this.GlobalTransform = GlobalTransform.Translated(velocity * Vector2.Left);
-            Board.setLocation(this);
+            Board.SetLocation(this);
         }
         else if (inputEvent.IsActionPressed("move_down"))
         {
-            Board.resetLocation(this);
+            Board.ResetLocation(this);
             timeToMove = TIME_TO_MOVE * FAST_FALL_MULTIPLIER;
-            Board.setLocation(this);
+            Board.SetLocation(this);
         }
 
         if (inputEvent.IsActionReleased("move_down")) 
@@ -145,7 +142,7 @@ public class Piece2D: Node2D
 
     public override void _Draw() 
     {
-		shape.drawIn(this);
+		shape.DrawIn(this);
 	}
 
     public void MoveDown(Vector2 velocity)
@@ -158,8 +155,6 @@ public class Piece2D: Node2D
         Node2D removedNode = shape.Parts.Find(item => { return item.GetInstanceId() == nodeId; });
         this.RemoveChild(removedNode);
         int RemovedAll = shape.Parts.RemoveAll(item => { return item.GetInstanceId() == nodeId; });
-
-        GD.Print("### RemovedAll: " + RemovedAll + " #####");
     }
 
 }

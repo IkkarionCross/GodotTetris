@@ -9,8 +9,8 @@ public enum PieceType
 
 public interface IPieceShape 
 {
-	void drawIn(Node2D node);
-	Node2D removeNode(int id);
+	void DrawIn(Node2D node);
+	Node2D RemoveNode(int id);
 }
 
 public abstract class PieceShape: IPieceShape {
@@ -28,9 +28,9 @@ public abstract class PieceShape: IPieceShape {
 		get { return type; }
 	}
 
-	protected List<Node2D> _squareParts;
+	protected List<Node2D> squareParts;
 	public List<Node2D> Parts {
-		get { return _squareParts; }
+		get { return squareParts; }
 	}
 
 	protected SquareNode pivot;
@@ -43,14 +43,15 @@ public abstract class PieceShape: IPieceShape {
 		}
 	}
 
-	public PieceShape(Vector2 squareSize) {
+	public PieceShape(Vector2 squareSize) 
+	{
 		this.squareSize = squareSize;
-		this._squareParts = new List<Node2D>();
+		this.squareParts = new List<Node2D>();
 	}
 
-	protected abstract void construct();
+	protected abstract void Construct();
 
-	public virtual void rotateRight() 
+	public virtual void RotateRight() 
 	{
 		for (int i = 0; i < Parts.Count; i++)
 		{
@@ -69,7 +70,7 @@ public abstract class PieceShape: IPieceShape {
 		}
 	}
 
-	public virtual void rotateLeft() 
+	public virtual void RotateLeft() 
 	{
 		for (int i = 0; i < Parts.Count; i++)
 		{
@@ -88,9 +89,9 @@ public abstract class PieceShape: IPieceShape {
 		}
 	}
 
-	public void drawIn(Node2D node) 
+	public void DrawIn(Node2D node) 
 	{
-		foreach (SquareNode part in this._squareParts)
+		foreach (SquareNode part in this.squareParts)
 		{
 			if (part.GetParent() == node) {
 				continue;
@@ -100,10 +101,10 @@ public abstract class PieceShape: IPieceShape {
 		}
 	}
 
-	public Node2D removeNode(int id)
+	public Node2D RemoveNode(int id)
 	{
-		Node2D removedNode = this._squareParts[id];
-		this._squareParts.RemoveAt(id);
+		Node2D removedNode = this.squareParts[id];
+		this.squareParts.RemoveAt(id);
 
 		return removedNode;
 	}

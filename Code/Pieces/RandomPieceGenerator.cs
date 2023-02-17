@@ -7,13 +7,8 @@ public class RandomPieceGenerator
 
 	//Defines a list of 3 bags that contains the 7 pieces in a random order
 	private PieceType[,] bags;
-	private int numberOfBags
-	{
-		get 
-		{
-			return 3;
-		}
-	}
+	private const int numberOfBags = 3;
+
 	private RandomNumberGenerator randomGenerator;
 
 	private int TypeCount 

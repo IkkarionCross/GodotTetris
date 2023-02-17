@@ -24,7 +24,7 @@ public class TetrisGod : Node2D
 		board2D = GetNode<Board2D>(boardNode);
 		viewPortSize = GetViewportRect().Size;
 
-		addNewPiece();
+		AddNewPiece();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -33,108 +33,108 @@ public class TetrisGod : Node2D
 		time += delta;
 		if (time >= TIME_TO_CREATE && !currentPiece.IsMoving)
 		{
-			board2D.checkTetris();
+			board2D.CheckTetris();
 			time = 0;
-			addNewPiece();
+			AddNewPiece();
 		}
  	}
 
-	private void addNewPiece() 
+	private void AddNewPiece() 
 	{
 		PieceType type = RandomPieceGenerator.Instance.Random();
-		currentPiece = create(type); 
+		currentPiece = Create(type); 
 		AddChild(currentPiece);
 	}
 
-	private Piece2D create(PieceType pieceType)
+	private Piece2D Create(PieceType pieceType)
 	{
 		switch (pieceType)
 		{
 			case PieceType.O:
-				return createO();
+				return CreateO();
 			case PieceType.I:
-				return createI();
+				return CreateI();
 			case PieceType.J:
-				return createJ();
+				return CreateJ();
 			case PieceType.L:
-				return createL();
+				return CreateL();
 			case PieceType.Z:
-				return createZ();
+				return CreateZ();
 			case PieceType.T:
-				return createT();
+				return CreateT();
 			case PieceType.S:
-				return createS();
+				return CreateS();
 			default:
 				return null;
 		}
 	}
 
-	private Piece2D createZ()
+	private Piece2D CreateZ()
 	{
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.T;
-		fallingPiece.Shape = new ZShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Down * board2D.squareSize.x  * 0.5f) + (Vector2.Left * board2D.squareSize.x * 2);
+		fallingPiece.Shape = new ZShape(board2D.SquareSize);
+		fallingPiece.Position = board2D.PieceStartPosition(fallingPiece.Shape) + (Vector2.Down * board2D.SquareSize.x  * 0.5f) + (Vector2.Left * board2D.SquareSize.x * 2);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
 
-	private Piece2D createT()
+	private Piece2D CreateT()
 	{
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.T;
-		fallingPiece.Shape = new TShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 3);
+		fallingPiece.Shape = new TShape(board2D.SquareSize);
+		fallingPiece.Position = board2D.PieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.SquareSize.x * 3);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
 
-	private Piece2D createI()
+	private Piece2D CreateI()
 	{
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.I;
-		fallingPiece.Shape = new IShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 3);
+		fallingPiece.Shape = new IShape(board2D.SquareSize);
+		fallingPiece.Position = board2D.PieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.SquareSize.x * 3);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
 
-	private Piece2D createL()
+	private Piece2D CreateL()
 	{
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.L;
-		fallingPiece.Shape = new LShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 3);
+		fallingPiece.Shape = new LShape(board2D.SquareSize);
+		fallingPiece.Position = board2D.PieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.SquareSize.x * 3);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
 
-	private Piece2D createJ()
+	private Piece2D CreateJ()
 	{
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.L;
-		fallingPiece.Shape = new JShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 2);
+		fallingPiece.Shape = new JShape(board2D.SquareSize);
+		fallingPiece.Position = board2D.PieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.SquareSize.x * 2);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
 
-	private Piece2D createO()
+	private Piece2D CreateO()
 	{
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.O;
-		fallingPiece.Shape = new OShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 2);
+		fallingPiece.Shape = new OShape(board2D.SquareSize);
+		fallingPiece.Position = board2D.PieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.SquareSize.x * 2);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
 
-	private Piece2D createS()
+	private Piece2D CreateS()
 	{
 		Piece2D fallingPiece = new Piece2D();
 		fallingPiece.Type = PieceType.S;
-		fallingPiece.Shape = new SShape(board2D.squareSize);
-		fallingPiece.Position = board2D.pieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.squareSize.x * 2);
+		fallingPiece.Shape = new SShape(board2D.SquareSize);
+		fallingPiece.Position = board2D.PieceStartPosition(fallingPiece.Shape) + (Vector2.Left * board2D.SquareSize.x * 2);
 		fallingPiece.Board = board2D;
 		return fallingPiece;
 	}
