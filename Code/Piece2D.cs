@@ -72,6 +72,7 @@ public class Piece2D: Node2D
             if (!Board.CanMove(this, Vector2.Down))
             {
                 isMoving = false;
+                Board.setLocation(this);
                 return;
             }
 

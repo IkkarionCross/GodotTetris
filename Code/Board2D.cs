@@ -87,18 +87,6 @@ public class Board2D: Node2D
         }
     }
 
-    public override void _Process(float delta) 
-    {
-        List<List<BoardPoint>> blocksToRemove = getBlocksToRemove();
-            
-        if (blocksToRemove.Count == 0) { /* printBoard(); */ return; }
-
-        int linesRemoved = tetris(blocksToRemove);
-        shiftDown(linesRemoved);
-
-        EmitSignal("OnLinesRemoved", linesRemoved);
-    }
-
     public override void _Draw() 
     {
         for (int c = 0; c < colCount+1; c++)
@@ -202,6 +190,18 @@ public class Board2D: Node2D
         }
 
         return true;
+    }
+
+    public void checkTetris()
+    {
+        List<List<BoardPoint>> blocksToRemove = getBlocksToRemove();
+            
+        if (blocksToRemove.Count == 0) { /* printBoard(); */ return; }
+
+        int linesRemoved = tetris(blocksToRemove);
+        shiftDown(linesRemoved);
+
+        EmitSignal("OnLinesRemoved", linesRemoved);
     }
 
     private void updateLocation(Piece2D piece, bool isInLocation) 

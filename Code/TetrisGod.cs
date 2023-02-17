@@ -1,10 +1,10 @@
 using Godot;
 using System;
 
-public class ShapeCreator : Node2D
+public class TetrisGod : Node2D
 {
 	private float time = 0.0f;
-    const float TIME_TO_CREATE = 3.0f;
+	const float TIME_TO_CREATE = 3.0f;
  
 	[Export] private NodePath boardNode;
 	private Board2D board2D;
@@ -31,9 +31,10 @@ public class ShapeCreator : Node2D
 	public override void _Process(float delta)
 	{
 		time += delta;
-        if (time >= TIME_TO_CREATE && !currentPiece.IsMoving)
+		if (time >= TIME_TO_CREATE && !currentPiece.IsMoving)
 		{
-            time = 0;
+			board2D.checkTetris();
+			time = 0;
 			addNewPiece();
 		}
  	}
@@ -42,7 +43,7 @@ public class ShapeCreator : Node2D
 	{
 		PieceType type = RandomPieceGenerator.Instance.Random();
 		currentPiece = create(type); 
-        AddChild(currentPiece);
+		AddChild(currentPiece);
 	}
 
 	private Piece2D create(PieceType pieceType)

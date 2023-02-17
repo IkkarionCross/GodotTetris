@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Fonts/Jangkar.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://Code/ShapeCreator.cs" type="Script" id=2]
+[ext_resource path="res://Code/TetrisGod.cs" type="Script" id=2]
 [ext_resource path="res://Code/Board2D.cs" type="Script" id=3]
 [ext_resource path="res://Code/GameState/Score.cs" type="Script" id=5]
 
